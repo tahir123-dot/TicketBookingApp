@@ -1,41 +1,55 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Ticket {
-  id: number;
+  id: string;
   name: string;
   price: number;
   time: string;
+  type: string;
 }
+
+const ticketData: Ticket[] = [
+  { id: "1", name: "VIP Ticket", price: 100, time: "10:00 AM", type: "VIP" },
+  { id: "2", name: "Regular Ticket", price: 50, time: "12:00 PM", type: "Regular" },
+];
 
 const Results = () => {
   const router = useRouter();
-  const { type, from, to, date } = useLocalSearchParams();
-  const tickets: Ticket[] = [
-    { id: 1, name: "Flight 101", price: 200, time: "10:00 AM" },
-    { id: 2, name: "Flight 202", price: 250, time: "12:00 PM" },
-  ];
 
-  const handleBook = (ticket: Ticket) => {
-    router.push({ pathname: "/booking", params: { ticket: JSON.stringify(ticket) } });
+  const handleSelectTicket = (ticket: Ticket) => {
+    router.push({
+      pathname: "/booking",
+      params: { ticket: JSON.stringify(ticket) },
+    });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Available {type?.toString().charAt(0).toUpperCase() + type?.toString().slice(1)}</Text>
+    <LinearGradient colors={["#141E30", "#243B55"]} style={styles.container}>
+      <Text style={styles.title}>🎟 Available Tickets</Text>
       <FlatList
-        data={tickets}
-        keyExtractor={(item) => item.id.toString()}
+        data={ticketData}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.ticket} onPress={() => handleBook(item)}>
-            <Text style={styles.ticketName}>{item.name}</Text>
-            <Text style={styles.ticketPrice}>${item.price}</Text>
-            <Text style={styles.ticketTime}>{item.time}</Text>
+          <TouchableOpacity style={styles.ticketCard} onPress={() => handleSelectTicket(item)}>
+            <View style={styles.ticketInfo}>
+              <Text style={styles.ticketName}>{item.name}</Text>
+              <View style={styles.row}>
+                <Ionicons name="time-outline" size={20} color="#fff" />
+                <Text style={styles.ticketTime}>{item.time}</Text>
+              </View>
+              <View style={styles.row}>
+                <Ionicons name="pricetag-outline" size={20} color="#4CAF50" />
+                <Text style={styles.ticketPrice}>${item.price}</Text>
+              </View>
+            </View>
           </TouchableOpacity>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -43,29 +57,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingTop: 50,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
     marginBottom: 20,
   },
-  ticket: {
-    backgroundColor: "#FFF",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+  ticketCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  ticketInfo: {
+    alignItems: "center",
   },
   ticketName: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
-  },
-  ticketPrice: {
-    fontSize: 16,
-    color: "#4CAF50",
+    color: "#fff",
+    marginBottom: 8,
   },
   ticketTime: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 16,
+    color: "#ddd",
+    marginLeft: 5,
+  },
+  ticketPrice: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#4CAF50",
+    marginLeft: 5,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
   },
 });
 
