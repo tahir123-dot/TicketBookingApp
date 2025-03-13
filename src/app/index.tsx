@@ -24,7 +24,7 @@ const Home = () => {
       style={styles.background}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        {/* Status Bar with matching background color */}
+        
         <StatusBar style="light" backgroundColor="rgba(0, 0, 0, 0.8)" translucent />
         <LinearGradient colors={["rgba(0,0,0,0.8)", "transparent"]} style={styles.overlay}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
